@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
-<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+<!-- This file is part of Coog.  The COPYRIGHT file at the top level of
 this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/form/notebook" position="inside">
         <page string="Cryptolog">
+            <label name="cryptolog_signer"/>
+            <field name="cryptolog_signer" colspan="3"/>
             <label name="cryptolog_status"/>
             <field name="cryptolog_status"/>
             <label name="cryptolog_id"/>
@@ -12,7 +14,7 @@ this repository contains the full copyright notices and license terms. -->
             <field name="cryptolog_url" widget="url"/>
             <label name="cryptolog_data"/>
             <field name="cryptolog_data"/>
-            <field name="cryptolog_signers" colspan="4"/>
+            <field name="cryptolog_logs" colspan="4" yfill="1"/>
             <group id="buttons" string="" col="4" colspan="4">
                 <group id="free_space" colspan="2"></group>
                 <button string="Request" name="cryptolog_request_transaction"/>

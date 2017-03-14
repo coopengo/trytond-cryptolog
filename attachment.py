@@ -1,47 +1,49 @@
+# This file is part of Coog. The COPYRIGHT file at the top level of
+# this repository contains the full copyright notices and license terms.
+import datetime
 import xmlrpclib
 import requests
+
 from trytond.pool import PoolMeta
 from trytond.config import config
-from trytond.model import ModelSQL, ModelView, fields
-from trytond.pyson import Eval
+from trytond.model import ModelView, fields
+from trytond.pyson import Eval, Bool
 from trytond.transaction import Transaction
 
-__all__ = ['Attachment', 'AttachmentSigner']
+__all__ = [
+    'Attachment'
+    ]
 
-section = 'cryptolog'
-
-
-class AttachmentSigner(ModelSQL):
-    "Attachment Signer"
-
-    __name__ = 'cryptolog.attachment-signer'
-
-    attachment = fields.Many2One('ir.attachment', 'Attachment')
-    signer = fields.Many2One('party.party', 'Signer')
+CONFIG_SECTION = 'cryptolog'
 
 
 class Attachment:
     __metaclass__ = PoolMeta
     __name__ = 'ir.attachment'
 
-    cryptolog_signers = fields.Many2Many('cryptolog.attachment-signer',
-        'attachment', 'signer', 'Cryptolog Signers')
+    cryptolog_signer = fields.Many2One('party.party', 'Cryptolog Signer',
+       ondelete='RESTRICT', states={
+           'readonly': Bool(Eval('cryptolog_status'))
+           })
     cryptolog_id = fields.Char('Cryptolog ID', readonly=True)
     cryptolog_url = fields.Char('Cryptolog URL', readonly=True)
     cryptolog_status = fields.Selection([
         (None, None),
+        ('issued', 'Issued'),
         ('ready', 'Ready'),
         ('expired', 'Expired'),
         ('canceled', 'Canceled'),
         ('failed', 'Failed'),
         ('completed', 'Completed'),
         ], 'Cryptolog Status', readonly=True)
-    cryptolog_data = fields.Function(fields.Binary('Signed Document',
+    cryptolog_data = fields.Function(
+        fields.Binary('Signed Document',
             filename='name',
-            readonly=True,
             states={
                 'invisible': Eval('cryptolog_status') != 'completed'
-            }, depends=['cryptolog_status']), 'cryptolog_get_documents')
+            }, depends=['cryptolog_status']),
+        'cryptolog_get_documents')
+    cryptolog_logs = fields.Text('Cryptolog Logs', readonly=True)
 
     @classmethod
     def __setup__(cls):
@@ -57,68 +59,83 @@ class Attachment:
 
     @classmethod
     def cryptolog_basic_auth(cls):
-        assert (config.get(section, 'auth_mode') == 'basic')
-        username = config.get(section, 'username')
-        password = config.get(section, 'password')
+        assert (config.get(CONFIG_SECTION, 'auth_mode') == 'basic')
+        username = config.get(CONFIG_SECTION, 'username')
+        password = config.get(CONFIG_SECTION, 'password')
         return requests.auth.HTTPBasicAuth(username, password)
+
+    def append_log(self, method, response):
+        self.cryptolog_logs = self.cryptolog_logs or ''
+        self.cryptolog_logs += '%s @ %s\n%s\n\n' % (method,
+            datetime.datetime.utcnow(), response)
 
     @classmethod
     @ModelView.button
     def cryptolog_request_transaction(cls, attachments):
         attachment, = attachments
-        url = config.get(section, 'url')
-        verify = False if config.get(section, 'no_verify') == '1' else True
+        url = config.get(CONFIG_SECTION, 'url')
+        verify = True
+        if config.get(CONFIG_SECTION, 'no_verify') == '1':
+            verify = False
         method = 'requester.requestTransaction'
         headers = cls.cryptolog_headers()
         auth = cls.cryptolog_basic_auth()
-        data = xmlrpclib.dumps(({
+        data = {
             'documents': [{
-                'documentType': 'pdf',
-                'name': attachment.name,
-                'content': xmlrpclib.Binary(attachment.data)
-            }],
+                    'documentType': 'pdf',
+                    'name': attachment.name,
+                    'content': xmlrpclib.Binary(attachment.data)
+                    }],
             'signers': [{
-                'lastname': p.full_name,
-                'emailAddress': p.email,
-                'phoneNum': p.phone
-            } for p in attachment.cryptolog_signers]
-        },), method)
+                    'lastname': attachment.cryptolog_signer.full_name,
+                    'emailAddress': attachment.cryptolog_signer.email,
+                    'phoneNum': attachment.cryptolog_signer.phone
+                    }]
+            }
+        data = xmlrpclib.dumps((data,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
         if req.status_code > 299:
             raise Exception(req.content)
-        content, res_id = xmlrpclib.loads(req.content)
-        attachment.cryptolog_id = content[0]['id']
-        attachment.cryptolog_url = content[0]['url']
+        response, _ = xmlrpclib.loads(req.content)
+        attachment.cryptolog_status = 'issued'
+        attachment.append_log(method, response)
+        attachment.cryptolog_id = response[0]['id']
+        attachment.cryptolog_url = response[0]['url']
         attachment.save()
 
     @classmethod
     @ModelView.button
     def cryptolog_get_transaction_info(cls, attachments):
         attachment, = attachments
-        url = config.get(section, 'url')
-        verify = False if config.get(section, 'no_verify') == '1' else True
+        url = config.get(CONFIG_SECTION, 'url')
+        verify = True
+        if config.get(CONFIG_SECTION, 'no_verify') == '1':
+            verify = False
         method = 'requester.getTransactionInfo'
         headers = cls.cryptolog_headers()
         auth = cls.cryptolog_basic_auth()
         data = xmlrpclib.dumps((attachment.cryptolog_id,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
-        content, res_id = xmlrpclib.loads(req.content)
-        attachment.cryptolog_status = content[0]['status']
+        response, _ = xmlrpclib.loads(req.content)
+        attachment.append_log(method, response)
+        attachment.cryptolog_status = response[0]['status']
         attachment.save()
 
     def cryptolog_get_documents(self, name):
         if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
                'size':
             return 1024
-        url = config.get(section, 'url')
-        verify = False if config.get(section, 'no_verify') == '1' else True
+        url = config.get(CONFIG_SECTION, 'url')
+        verify = True
+        if config.get(CONFIG_SECTION, 'no_verify') == '1':
+            verify = False
         method = 'requester.getDocuments'
         headers = self.cryptolog_headers()
         auth = self.cryptolog_basic_auth()
         data = xmlrpclib.dumps((self.cryptolog_id,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
-        content, res_id = xmlrpclib.loads(req.content)
-        return content[0][0]['content']
+        response, _ = xmlrpclib.loads(req.content)
+        return response[0][0]['content']

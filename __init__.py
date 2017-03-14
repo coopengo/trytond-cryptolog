@@ -1,12 +1,10 @@
-# This file is part of Tryton.  The COPYRIGHT file at the top level of
+# This file is part of Coog. The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
-
 from trytond.pool import Pool
-from attachment import Attachment, AttachmentSigner
+import attachment
 
 
 def register():
     Pool.register(
-        Attachment,
-        AttachmentSigner,
+        attachment.Attachment,
         module='cryptolog', type_='model')
