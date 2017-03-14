@@ -1,6 +1,6 @@
 ## Trytond Cryptolog
 
-This is trytond module to sign tryton `ir.attachment` via [Cryptolog](https://www.universign.eu/fr/) service.
+This is a trytond module to sign tryton `ir.attachment` via [Cryptolog](https://www.universign.eu/fr/) service.
 
 ### How to use
 
