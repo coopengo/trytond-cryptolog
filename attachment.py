@@ -11,7 +11,7 @@ from trytond.pyson import Eval, Bool
 from trytond.transaction import Transaction
 
 __all__ = [
-    'Attachment'
+    'Attachment',
     ]
 
 CONFIG_SECTION = 'cryptolog'
@@ -22,9 +22,10 @@ class Attachment:
     __name__ = 'ir.attachment'
 
     cryptolog_signer = fields.Many2One('party.party', 'Cryptolog Signer',
-       ondelete='RESTRICT', states={
-           'readonly': Bool(Eval('cryptolog_status'))
-           })
+        ondelete='RESTRICT', states={
+            'readonly': Bool(Eval('cryptolog_status'))
+            }, depends=['cryptolog_status']
+        )
     cryptolog_id = fields.Char('Cryptolog ID', readonly=True)
     cryptolog_url = fields.Char('Cryptolog URL', readonly=True)
     cryptolog_status = fields.Selection([
@@ -72,6 +73,7 @@ class Attachment:
     @classmethod
     @ModelView.button
     def cryptolog_request_transaction(cls, attachments):
+        # for now we support only one record
         attachment, = attachments
         url = config.get(CONFIG_SECTION, 'url')
         verify = True
@@ -124,8 +126,10 @@ class Attachment:
         attachment.save()
 
     def cryptolog_get_documents(self, name):
+        # tryton trick (extra param on context to retrieve file size)
         if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
-               'size':
+                'size':
+            # does not make sense to retrieve the doc juste for the size
             return 1024
         url = config.get(CONFIG_SECTION, 'url')
         verify = True
