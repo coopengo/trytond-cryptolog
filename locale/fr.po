@@ -1,0 +1,55 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "field:ir.attachment,cryptolog_data:"
+msgid "Signed Document"
+msgstr "Document signé"
+
+msgctxt "field:ir.attachment,cryptolog_id:"
+msgid "Cryptolog ID"
+msgstr "ID Cryptolog"
+
+msgctxt "field:ir.attachment,cryptolog_logs:"
+msgid "Cryptolog Logs"
+msgstr "Journal Cryptolog"
+
+msgctxt "field:ir.attachment,cryptolog_signer:"
+msgid "Cryptolog Signer"
+msgstr "Signataire Cryptolog"
+
+msgctxt "field:ir.attachment,cryptolog_status:"
+msgid "Cryptolog Status"
+msgstr "Statut Cryptolog"
+
+msgctxt "field:ir.attachment,cryptolog_url:"
+msgid "Cryptolog URL"
+msgstr "URL Cryptolog"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid ""
+msgstr ""
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Canceled"
+msgstr "Annulée"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Completed"
+msgstr "Réussie"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Expired"
+msgstr "Expirée"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Failed"
+msgstr "Rejetée"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Issued"
+msgstr "Lancée"
+
+msgctxt "selection:ir.attachment,cryptolog_status:"
+msgid "Ready"
+msgstr "Prête"
