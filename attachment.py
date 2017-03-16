@@ -62,7 +62,9 @@ class Attachment:
     def cryptolog_basic_auth(cls):
         assert (config.get(CONFIG_SECTION, 'auth_mode') == 'basic')
         username = config.get(CONFIG_SECTION, 'username')
+        assert username
         password = config.get(CONFIG_SECTION, 'password')
+        assert password
         return requests.auth.HTTPBasicAuth(username, password)
 
     def append_log(self, method, response):
@@ -76,6 +78,7 @@ class Attachment:
         # for now we support only one record
         attachment, = attachments
         url = config.get(CONFIG_SECTION, 'url')
+        assert url
         verify = True
         if config.get(CONFIG_SECTION, 'no_verify') == '1':
             verify = False
@@ -111,6 +114,7 @@ class Attachment:
     def cryptolog_get_transaction_info(cls, attachments):
         attachment, = attachments
         url = config.get(CONFIG_SECTION, 'url')
+        assert url
         verify = True
         if config.get(CONFIG_SECTION, 'no_verify') == '1':
             verify = False
