@@ -3,7 +3,7 @@
 this repository contains the full copyright notices and license terms. -->
 <data>
     <xpath expr="/form/notebook" position="inside">
-        <page string="Cryptolog">
+        <page id="cryptolog" string="Cryptolog">
             <label name="cryptolog_signer"/>
             <field name="cryptolog_signer" colspan="3"/>
             <label name="cryptolog_status"/>
