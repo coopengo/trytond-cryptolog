@@ -131,19 +131,20 @@ class Attachment:
 
     def cryptolog_get_documents(self, name):
         # tryton trick (extra param on context to retrieve file size)
-        if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
-                'size':
-            # does not make sense to retrieve the doc juste for the size
-            return 1024
-        url = config.get(CONFIG_SECTION, 'url')
-        verify = True
-        if config.get(CONFIG_SECTION, 'no_verify') == '1':
-            verify = False
-        method = 'requester.getDocuments'
-        headers = self.cryptolog_headers()
-        auth = self.cryptolog_basic_auth()
-        data = xmlrpclib.dumps((self.cryptolog_id,), method)
-        req = requests.post(url, headers=headers, auth=auth, data=data,
-            verify=verify)
-        response, _ = xmlrpclib.loads(req.content)
-        return response[0][0]['content']
+        if self.cryptolog_id:
+            if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
+                    'size':
+                # does not make sense to retrieve the doc juste for the size
+                return 1024
+            url = config.get(CONFIG_SECTION, 'url')
+            verify = True
+            if config.get(CONFIG_SECTION, 'no_verify') == '1':
+                verify = False
+            method = 'requester.getDocuments'
+            headers = self.cryptolog_headers()
+            auth = self.cryptolog_basic_auth()
+            data = xmlrpclib.dumps((self.cryptolog_id,), method)
+            req = requests.post(url, headers=headers, auth=auth, data=data,
+                verify=verify)
+            response, _ = xmlrpclib.loads(req.content)
+            return response[0][0]['content']
