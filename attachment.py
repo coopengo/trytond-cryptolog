@@ -95,7 +95,9 @@ class Attachment:
                     'lastname': attachment.cryptolog_signer.full_name,
                     'emailAddress': attachment.cryptolog_signer.email,
                     'phoneNum': attachment.cryptolog_signer.phone
-                    }]
+                    }],
+            'mustContactFirstSigner': True,
+            'finalDocSent': True
             }
         data = xmlrpclib.dumps((data,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
@@ -131,7 +133,7 @@ class Attachment:
 
     def cryptolog_get_documents(self, name):
         # tryton trick (extra param on context to retrieve file size)
-        if self.cryptolog_id:
+        if self.cryptolog_id and self.cryptolog_status == 'completed':
             if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
                     'size':
                 # does not make sense to retrieve the doc juste for the size
