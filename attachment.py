@@ -99,6 +99,22 @@ class Attachment:
             'mustContactFirstSigner': True,
             'finalDocSent': True
             }
+
+        successURL = config.get(CONFIG_SECTION, 'success-url')
+        if successURL is not None:
+            successURL = successURL.format(att=attachment)
+            data['signers'][0]['successURL'] = successURL
+
+        failURL = config.get(CONFIG_SECTION, 'fail-url')
+        if failURL is not None:
+            failURL = failURL.format(att=attachment)
+            data['signers'][0]['failURL'] = failURL
+
+        cancelURL = config.get(CONFIG_SECTION, 'cancel-url')
+        if cancelURL is not None:
+            cancelURL = cancelURL.format(att=attachment)
+            data['signers'][0]['cancelURL'] = cancelURL
+
         data = xmlrpclib.dumps((data,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
