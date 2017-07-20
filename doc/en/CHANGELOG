@@ -1,0 +1,2 @@
+- support url-success, url-fail and url-cancel configuration items to support
+  callbacks
