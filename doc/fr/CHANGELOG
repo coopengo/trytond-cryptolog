@@ -1,2 +1,1 @@
-- supporter url-success, url-fail et url-cancel dans la configuration pour gérer
-  les retour d'Universign
+- FEA#6685 support de url-success, url-fail et url-cancel dans la configuration pour gérer les retours d'Universign
