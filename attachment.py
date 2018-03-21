@@ -29,7 +29,7 @@ class Attachment:
     cryptolog_id = fields.Char('Cryptolog ID', readonly=True)
     cryptolog_url = fields.Char('Cryptolog URL', readonly=True)
     cryptolog_status = fields.Selection([
-        (None, None),
+        ('', ''),
         ('issued', 'Issued'),
         ('ready', 'Ready'),
         ('expired', 'Expired'),

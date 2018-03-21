@@ -53,3 +53,15 @@ msgstr "Lancée"
 msgctxt "selection:ir.attachment,cryptolog_status:"
 msgid "Ready"
 msgstr "Prête"
+
+msgctxt "view:ir.attachment:"
+msgid "Cryptolog"
+msgstr "Cryptolog"
+
+msgctxt "view:ir.attachment:"
+msgid "Request"
+msgstr "Demander"
+
+msgctxt "view:ir.attachment:"
+msgid "Update Info"
+msgstr "Mise à jour des informations"
