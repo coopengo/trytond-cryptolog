@@ -85,6 +85,7 @@ class Attachment:
         method = 'requester.requestTransaction'
         headers = cls.cryptolog_headers()
         auth = cls.cryptolog_basic_auth()
+        signer = attachment.cryptolog_signer
         data = {
             'documents': [{
                     'documentType': 'pdf',
@@ -92,12 +93,10 @@ class Attachment:
                     'content': xmlrpclib.Binary(attachment.data)
                     }],
             'signers': [{
-                    'firstname': '%s %s' % (
-                        attachment.cryptolog_signer.gender_string,
-                        attachment.cryptolog_signer.first_name),
-                    'lastname': attachment.cryptolog_signer.last_name,
-                    'emailAddress': attachment.cryptolog_signer.email,
-                    'phoneNum': attachment.cryptolog_signer.phone
+                    'firstname': '',
+                    'lastname': signer.full_name,
+                    'emailAddress': signer.email,
+                    'phoneNum': signer.phone
                     }],
             'mustContactFirstSigner': True,
             'finalDocSent': True
