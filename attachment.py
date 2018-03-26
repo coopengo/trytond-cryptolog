@@ -92,7 +92,10 @@ class Attachment:
                     'content': xmlrpclib.Binary(attachment.data)
                     }],
             'signers': [{
-                    'lastname': attachment.cryptolog_signer.full_name,
+                    'firstname': '%s %s' % (
+                        attachment.cryptolog_signer.gender_string,
+                        attachment.cryptolog_signer.first_name),
+                    'lastname': attachment.cryptolog_signer.last_name,
                     'emailAddress': attachment.cryptolog_signer.email,
                     'phoneNum': attachment.cryptolog_signer.phone
                     }],
