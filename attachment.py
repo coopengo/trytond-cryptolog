@@ -1,7 +1,7 @@
 # This file is part of Coog. The COPYRIGHT file at the top level of
 # this repository contains the full copyright notices and license terms.
 import datetime
-import xmlrpclib
+import xmlrpc.client
 import requests
 
 from trytond.pool import PoolMeta
@@ -17,8 +17,7 @@ __all__ = [
 CONFIG_SECTION = 'cryptolog'
 
 
-class Attachment:
-    __metaclass__ = PoolMeta
+class Attachment(metaclass=PoolMeta):
     __name__ = 'ir.attachment'
 
     cryptolog_signer = fields.Many2One('party.party', 'Cryptolog Signer',
@@ -90,7 +89,7 @@ class Attachment:
             'documents': [{
                     'documentType': 'pdf',
                     'name': attachment.name,
-                    'content': xmlrpclib.Binary(attachment.data)
+                    'content': xmlrpc.client.Binary(attachment.data)
                     }],
             'signers': [{
                     'firstname': '',
@@ -117,12 +116,12 @@ class Attachment:
             cancelURL = cancelURL.format(att=attachment)
             data['signers'][0]['cancelURL'] = cancelURL
 
-        data = xmlrpclib.dumps((data,), method)
+        data = xmlrpc.client.dumps((data,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
         if req.status_code > 299:
             raise Exception(req.content)
-        response, _ = xmlrpclib.loads(req.content)
+        response, _ = xmlrpc.client.loads(req.content)
         attachment.cryptolog_status = 'issued'
         attachment.append_log(method, response)
         attachment.cryptolog_id = response[0]['id']
@@ -141,10 +140,10 @@ class Attachment:
         method = 'requester.getTransactionInfo'
         headers = cls.cryptolog_headers()
         auth = cls.cryptolog_basic_auth()
-        data = xmlrpclib.dumps((attachment.cryptolog_id,), method)
+        data = xmlrpc.client.dumps((attachment.cryptolog_id,), method)
         req = requests.post(url, headers=headers, auth=auth, data=data,
             verify=verify)
-        response, _ = xmlrpclib.loads(req.content)
+        response, _ = xmlrpc.client.loads(req.content)
         attachment.append_log(method, response)
         attachment.cryptolog_status = response[0]['status']
         attachment.save()
@@ -163,8 +162,8 @@ class Attachment:
             method = 'requester.getDocuments'
             headers = self.cryptolog_headers()
             auth = self.cryptolog_basic_auth()
-            data = xmlrpclib.dumps((self.cryptolog_id,), method)
+            data = xmlrpc.client.dumps((self.cryptolog_id,), method)
             req = requests.post(url, headers=headers, auth=auth, data=data,
                 verify=verify)
-            response, _ = xmlrpclib.loads(req.content)
+            response, _ = xmlrpc.client.loads(req.content)
             return response[0][0]['content']
