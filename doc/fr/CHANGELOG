@@ -1,2 +1,3 @@
+* BUG#12132 Le champ cryptolog_data n'est pas correctement encodé
 * BUG#8586 Correctif des données envoyées a universign concernant les informations du signataire
 - FEA#6685 support de url-success, url-fail et url-cancel dans la configuration pour gérer les retours d'Universign
