@@ -166,4 +166,4 @@ class Attachment(metaclass=PoolMeta):
             req = requests.post(url, headers=headers, auth=auth, data=data,
                 verify=verify)
             response, _ = xmlrpc.client.loads(req.content)
-            return response[0][0]['content']
+            return bytes(str(response[0][0]['content']), 'utf-8')
