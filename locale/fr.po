@@ -10,21 +10,9 @@ msgctxt "field:ir.attachment,cryptolog_id:"
 msgid "Cryptolog ID"
 msgstr "ID Cryptolog"
 
-msgctxt "field:ir.attachment,cryptolog_logs:"
-msgid "Cryptolog Logs"
-msgstr "Journal Cryptolog"
-
-msgctxt "field:ir.attachment,cryptolog_signer:"
-msgid "Cryptolog Signer"
-msgstr "Signataire Cryptolog"
-
 msgctxt "field:ir.attachment,cryptolog_status:"
 msgid "Cryptolog Status"
 msgstr "Statut Cryptolog"
-
-msgctxt "field:ir.attachment,cryptolog_url:"
-msgid "Cryptolog URL"
-msgstr "URL Cryptolog"
 
 msgctxt "selection:ir.attachment,cryptolog_status:"
 msgid ""
@@ -53,14 +41,6 @@ msgstr "Lancée"
 msgctxt "selection:ir.attachment,cryptolog_status:"
 msgid "Ready"
 msgstr "Prête"
-
-msgctxt "view:ir.attachment:"
-msgid "Cryptolog"
-msgstr "Cryptolog"
-
-msgctxt "view:ir.attachment:"
-msgid "Request"
-msgstr "Demander"
 
 msgctxt "view:ir.attachment:"
 msgid "Update Info"
