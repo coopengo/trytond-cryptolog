@@ -18,7 +18,6 @@ class Attachment(metaclass=PoolMeta):
 
     cryptolog_status = fields.Function(
         fields.Selection([
-                ('', ''),
                 ('issued', 'Issued'),
                 ('ready', 'Ready'),
                 ('expired', 'Expired'),

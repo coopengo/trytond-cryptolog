@@ -17,29 +17,44 @@ class Signature(metaclass=PoolMeta):
         return {'Content-Type': 'application/xml'}
 
     @classmethod
-    def cryptolog_transcode_signer_structure(cls):
+    def cryptolog_transcode_signer_structure(cls, conf):
         return {
             'first_name': 'firstname',
             'last_name': 'lastname',
-            'birth_date': 'birthdate',
+            'birth_date': 'birthDate',
             'email': 'emailAddress',
-            'phone': 'phoneNum',
+            'mobile': 'phoneNum',
+            'lang': 'language',
             }
 
     @classmethod
     def cryptolog_get_data_structure(cls, report, conf):
         data = {
+            'profile': conf['profile'],
             'documents': [{
                     'documentType': 'pdf',
                     'name': report['report_name'],
-                    'content': xmlrpc.client.Binary(report['data'])
+                    'content': xmlrpc.client.Binary(report['data']),
+                    'signatureFields': [
+                        cls.transcode_structure(conf, 'signature_position')],
                     }],
             'signers': [],
-            'mustContactFirstSigner': True,
-            'finalDocSent': True
+            'mustContactFirstSigner': conf['send_email_to_sign'],
+            'finalDocSent': conf['send_signed_docs_by_email'],
+            'description': conf['description'],
+            'certificateType': conf['level'],
+            'handwrittenSignatureMode': {
+                'never': 0,
+                'always': 1,
+                'touch_interface': 2
+                }[conf['handwritten_signature']],
             }
+        if conf['call_back_url']:
+            data['registrationCallbackURL'] = conf['call_back_url']
+
         for signer in report['signers']:
-            signer_struct = cls.get_signer_structure(signer)
+            signer_struct = cls.transcode_structure(conf, 'signer_structure',
+                signer)
             for call in conf['urls'].keys():
                 signer_struct['%sURL' % call] = conf['urls'][call]
             data['signers'].append(signer_struct)
@@ -64,6 +79,21 @@ class Signature(metaclass=PoolMeta):
     @classmethod
     def cryptolog_get_content_from_response(cls, response):
         return response[0][0]['content'].data
+
+    @classmethod
+    def cryptolog_transcode_signature_position(cls, conf):
+        return {
+            'field_name': 'name',
+            'page': 'page',
+            'coordinate_x': 'x',
+            'coordinate_y': 'y',
+            }
+
+    @classmethod
+    def signature_position(cls, conf):
+        res = super(Signature, cls).signature_position(conf)
+        res['signerIndex'] = 0
+        return res
 
 
 class SignatureCredential(metaclass=PoolMeta):
