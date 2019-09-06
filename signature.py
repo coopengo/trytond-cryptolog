@@ -41,7 +41,6 @@ class Signature(metaclass=PoolMeta):
             'signers': [],
             'mustContactFirstSigner': conf['send_email_to_sign'],
             'finalDocSent': conf['send_signed_docs_by_email'],
-            'description': conf['description'],
             'certificateType': conf['level'],
             'handwrittenSignatureMode': {
                 'never': 0,
@@ -49,8 +48,6 @@ class Signature(metaclass=PoolMeta):
                 'touch_interface': 2
                 }[conf['handwritten_signature']],
             }
-        if conf['call_back_url']:
-            data['registrationCallbackURL'] = conf['call_back_url']
 
         for signer in report['signers']:
             signer_struct = cls.transcode_structure(conf, 'signer_structure',
@@ -83,7 +80,6 @@ class Signature(metaclass=PoolMeta):
     @classmethod
     def cryptolog_transcode_signature_position(cls, conf):
         return {
-            'field_name': 'name',
             'page': 'page',
             'coordinate_x': 'x',
             'coordinate_y': 'y',
