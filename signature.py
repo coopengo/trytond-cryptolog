@@ -35,8 +35,6 @@ class Signature(metaclass=PoolMeta):
                     'documentType': 'pdf',
                     'name': report['report_name'],
                     'content': xmlrpc.client.Binary(report['data']),
-                    'signatureFields': [
-                        cls.transcode_structure(conf, 'signature_position')],
                     }],
             'signers': [],
             'mustContactFirstSigner': conf['send_email_to_sign'],
@@ -55,6 +53,9 @@ class Signature(metaclass=PoolMeta):
             for call in conf['urls'].keys():
                 signer_struct['%sURL' % call] = conf['urls'][call]
             data['signers'].append(signer_struct)
+        if 'page' in conf:
+            data['documents']['signatureFields'] = [
+                cls.transcode_structure(conf, 'signature_position')]
         return data
 
     @classmethod
