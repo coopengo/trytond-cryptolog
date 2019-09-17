@@ -92,6 +92,22 @@ class Signature(metaclass=PoolMeta):
         res['signerIndex'] = 0
         return res
 
+    @classmethod
+    def cryptolog_call_back(cls, params):
+        cls.call_back('cryptolog', params['id'], params['signer'],
+            params['status'])
+
+    @classmethod
+    def cryptolog_transcode_status(cls):
+        return {
+            0: 'ready',
+            1: 'expired',
+            2: 'completed',
+            3: 'canceled',
+            4: 'failed',
+            5: 'pending_validation',
+            }
+
 
 class SignatureCredential(metaclass=PoolMeta):
     __name__ = 'document.signature.credential'
