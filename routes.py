@@ -1,11 +1,11 @@
 from trytond.wsgi import app
 from trytond.protocols.wrappers import \
-    with_pool_by_alias, with_transaction
+    with_pool_by_config, with_transaction
 
 
-@app.route('/cryptolog/<database_alias>/callback',
+@app.route('/cryptolog/callback',
         methods=['GET'])
-@with_pool_by_alias
+@with_pool_by_config
 @with_transaction(readonly=False)
 def callback(request, pool):
     Signature = pool.get('document.signature')
