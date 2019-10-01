@@ -3,6 +3,7 @@
 from trytond.pool import Pool
 from . import signature
 from . import attachment
+from . import routes
 
 
 def register():
