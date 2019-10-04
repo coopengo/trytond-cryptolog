@@ -35,6 +35,7 @@ class Signature(metaclass=PoolMeta):
                     'documentType': 'pdf',
                     'name': report['report_name'],
                     'content': xmlrpc.client.Binary(report['data']),
+                    'signatureFields': []
                     }],
             'signers': [],
             'mustContactFirstSigner': conf['send_email_to_sign'],
@@ -53,9 +54,10 @@ class Signature(metaclass=PoolMeta):
             for call in conf['urls'].keys():
                 signer_struct['%sURL' % call] = conf['urls'][call]
             data['signers'].append(signer_struct)
-        if 'page' in conf:
-            data['documents']['signatureFields'] = [
-                cls.transcode_structure(conf, 'signature_position')]
+        for coordinate in report.get('coordinates', []):
+            data['documents'][0]['signatureFields'].append(
+                cls.transcode_structure(conf, 'signature_position',
+                    coordinate))
         return data
 
     @classmethod
@@ -87,8 +89,8 @@ class Signature(metaclass=PoolMeta):
             }
 
     @classmethod
-    def signature_position(cls, conf):
-        res = super(Signature, cls).signature_position(conf)
+    def signature_position(cls, conf, coordinate):
+        res = super(Signature, cls).signature_position(conf, coordinate)
         res['signerIndex'] = 0
         return res
 
@@ -100,12 +102,12 @@ class Signature(metaclass=PoolMeta):
     @classmethod
     def cryptolog_transcode_status(cls):
         return {
-            0: 'ready',
-            1: 'expired',
-            2: 'completed',
-            3: 'canceled',
-            4: 'failed',
-            5: 'pending_validation',
+            '0': 'ready',
+            '1': 'expired',
+            '2': 'completed',
+            '3': 'canceled',
+            '4': 'failed',
+            '5': 'pending_validation',
             }
 
 
