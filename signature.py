@@ -34,8 +34,7 @@ class Signature(metaclass=PoolMeta):
             'documents': [{
                     'documentType': 'pdf',
                     'name': report['report_name'],
-                    'content': xmlrpc.client.Binary(report['data']),
-                    'signatureFields': []
+                    'content': xmlrpc.client.Binary(report['data'])
                     }],
             'signers': [],
             'mustContactFirstSigner': conf['send_email_to_sign'],
@@ -55,6 +54,8 @@ class Signature(metaclass=PoolMeta):
                 signer_struct['%sURL' % call] = conf['urls'][call]
             data['signers'].append(signer_struct)
         for coordinate in report.get('coordinates', []):
+            if 'signatureFields' not in data['documents'][0]:
+                data['documents'][0]['signatureFields'] = []
             data['documents'][0]['signatureFields'].append(
                 cls.transcode_structure(conf, 'signature_position',
                     coordinate))
