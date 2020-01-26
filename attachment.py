@@ -81,12 +81,8 @@ class Attachment(metaclass=PoolMeta):
         if not self.signature:
             return
         if self.signature.provider_id and self.signature.status == 'completed':
-            # tryton trick (extra param on context to retrieve file size)
-            if Transaction().context.get('%s.%s' % (self.__name__, name)) == \
-                    'size':
-                # does not make sense to retrieve the doc juste for the size
-                return 1024
-            return self.signature.get_documents()
+            # Should be removed post 2.6
+            return self.data
 
     def getter_cryptolog_field(self, name):
         if not self.signature:
