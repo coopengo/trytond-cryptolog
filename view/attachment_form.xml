@@ -5,9 +5,5 @@ this repository contains the full copyright notices and license terms. -->
     <xpath expr="/form/notebook/page[@id='e-signature']" position="inside">
             <label name="cryptolog_data"/>
             <field name="cryptolog_data"/>
-            <group id="buttons" string="" col="4" colspan="4">
-                <group id="free_space" colspan="2"></group>
-                <button string="Update Info" name="cryptolog_update_transaction_info"/>
-            </group>
     </xpath>
 </data>
