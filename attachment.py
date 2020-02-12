@@ -4,8 +4,8 @@ from sql import Null
 
 from trytond import backend
 from trytond.pool import PoolMeta, Pool
-from trytond.model import ModelView, fields
-from trytond.pyson import Eval, Not, In
+from trytond.model import fields
+from trytond.pyson import Eval
 from trytond.transaction import Transaction
 
 __all__ = [
@@ -62,20 +62,9 @@ class Attachment(metaclass=PoolMeta):
         attachment_h.drop_column('cryptolog_url')
         attachment_h.drop_column('cryptolog_signer')
 
-    @classmethod
-    def __setup__(cls):
-        super(Attachment, cls).__setup__()
-        cls._buttons.update({
-                'cryptolog_update_transaction_info': {
-                    'invisible': Not(In(Eval('cryptolog_status'),
-                            ['', 'issued', 'ready']))}
-                })
-
-    @classmethod
-    @ModelView.button
     def cryptolog_update_transaction_info(cls, attachments):
-        for signature in [a.signature for a in attachments if a.signature]:
-            signature.update_transaction_info()
+        signatures = [a.signature for a in attachments if a.signature]
+        Pool().get('document.signature').update_transaction_info(signatures)
 
     def cryptolog_get_documents(self, name):
         if not self.signature:
