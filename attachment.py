@@ -7,6 +7,7 @@ from trytond.pool import PoolMeta, Pool
 from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
+from trytond.model import ModelView, fields
 
 __all__ = [
     'Attachment',
@@ -39,6 +40,12 @@ class Attachment(metaclass=PoolMeta):
         'cryptolog_get_documents')
 
     @classmethod
+    def __setup__(cls):
+        cls._buttons.update({
+                'cryptolog_update_transaction_info': {},
+                })
+
+    @classmethod
     def __register__(cls, module_name):
         TableHandler = backend.get('TableHandler')
         attachment_h = TableHandler(cls)
@@ -68,6 +75,8 @@ class Attachment(metaclass=PoolMeta):
         attachment_h.drop_column('cryptolog_url')
         attachment_h.drop_column('cryptolog_signer')
 
+    @classmethod
+    @ModelView.button
     def cryptolog_update_transaction_info(cls, attachments):
         signatures = [a.signature for a in attachments if a.signature]
         Pool().get('document.signature').update_transaction_info(signatures)

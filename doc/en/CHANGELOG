@@ -1,3 +1,4 @@
+* BUG#16048 Fix electronic signature manual update function to be callable from API
 * FEA#14763 Allow to call electronic signature provider in two passes
 * BUG#12132 Crytpolog_data field is not correctly encoded
 * BUG#8586 Fix signer data's informations sent to universign
