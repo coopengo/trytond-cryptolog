@@ -41,6 +41,7 @@ class Attachment(metaclass=PoolMeta):
 
     @classmethod
     def __setup__(cls):
+        super().__setup__()
         cls._buttons.update({
                 'cryptolog_update_transaction_info': {},
                 })
