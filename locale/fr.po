@@ -14,6 +14,10 @@ msgctxt "field:ir.attachment,cryptolog_status:"
 msgid "Cryptolog Status"
 msgstr "Statut Cryptolog"
 
+msgctxt "field:ir.attachment,cryptolog_url:"
+msgid "Cryptolog URL"
+msgstr "URL Cryptolog"
+
 msgctxt "selection:document.signature.credential,provider:"
 msgid "Cryptolog"
 msgstr "Universign"
