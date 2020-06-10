@@ -29,6 +29,9 @@ class Attachment(metaclass=PoolMeta):
     cryptolog_id = fields.Function(
         fields.Char('Cryptolog ID', readonly=True),
         'getter_cryptolog_field')
+    cryptolog_url = fields.Function(
+        fields.Char('Cryptolog URL', readonly=True),
+        'getter_cryptolog_field')
     cryptolog_data = fields.Function(
         fields.Binary('Signed Document', filename='name', states={
                 'invisible': Eval('cryptolog_status') != 'completed'},
@@ -50,12 +53,15 @@ class Attachment(metaclass=PoolMeta):
         cursor = Transaction().connection.cursor()
         cursor.execute(*table.select(table.id, table.cryptolog_id,
                 table.cryptolog_status, table.cryptolog_logs,
+                table.cryptolog_url,
                 where=table.cryptolog_id != Null))
-        for attachment_id, cryptolog_id, status, logs in cursor.fetchall():
+        for attachment_id, cryptolog_id, status, logs, url in cursor.fetchall(
+                ):
             cursor.execute(*signature.insert(
                     [signature.attachment, signature.provider_id,
-                        signature.status, signature.logs],
-                    [[attachment_id, cryptolog_id, status, logs]]))
+                        signature.status, signature.logs,
+                        signature.provider_url],
+                    [[attachment_id, cryptolog_id, status, logs, url]]))
         attachment_h.drop_column('cryptolog_id')
         attachment_h.drop_column('cryptolog_status')
         attachment_h.drop_column('cryptolog_logs')
@@ -80,3 +86,5 @@ class Attachment(metaclass=PoolMeta):
             return self.signature.status
         elif name == 'cryptolog_id':
             return self.signature.provider_id
+        elif name == 'cryptolog_url':
+            return self.signature.provider_url
