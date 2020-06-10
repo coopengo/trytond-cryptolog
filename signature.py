@@ -66,6 +66,10 @@ class Signature(metaclass=PoolMeta):
         return response[0]['id']
 
     @classmethod
+    def cryptolog_get_provider_url_from_response(cls, response):
+        return response[0]['url']
+
+    @classmethod
     def cryptolog_get_methods(cls):
         return {
             'init_signature': 'requester.requestTransaction',
