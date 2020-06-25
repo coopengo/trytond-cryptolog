@@ -74,6 +74,7 @@ class Signature(metaclass=PoolMeta):
         return {
             'init_signature': 'requester.requestTransaction',
             'check_status': 'requester.getTransactionInfo',
+            'relaunch': 'requester.relaunchTransaction',
             'get_signed_document': 'requester.getDocuments',
             }
 
