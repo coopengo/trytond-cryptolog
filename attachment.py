@@ -4,7 +4,6 @@ from sql import Null
 
 from trytond import backend
 from trytond.pool import PoolMeta, Pool
-from trytond.model import fields
 from trytond.pyson import Eval
 from trytond.transaction import Transaction
 from trytond.model import ModelView, fields
@@ -48,8 +47,7 @@ class Attachment(metaclass=PoolMeta):
 
     @classmethod
     def __register__(cls, module_name):
-        TableHandler = backend.get('TableHandler')
-        attachment_h = TableHandler(cls)
+        attachment_h = backend.TableHandler(cls)
         pool = Pool()
         Signature = pool.get('document.signature')
         super(Attachment, cls).__register__(module_name)
