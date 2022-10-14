@@ -1,3 +1,4 @@
+* OTH#00000 Mise à jour des tests vers Tryton 6.4
 * BUG#16048 Correctif de la méthode de mise à jours des données de signature éléctronique afin d'être appelable depuis API.
 * FEA#14763 Possibilité de découper le procecssus de signature électronique en deux étape
 * BUG#12132 Le champ cryptolog_data n'est pas correctement encodé
